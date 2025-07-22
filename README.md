@@ -20,3 +20,8 @@ npm cypress open
 ```bash
 npm cypress run
 ```
+>Para executar em Mobile
+```bash
+npm run teste:mobile
+```
+ASS : Gabriel Mendes QA - Engineer
