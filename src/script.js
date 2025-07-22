@@ -10,11 +10,11 @@ document.querySelector('#phone-checkbox')
     } else {
       phoneLabelSpan.style.display = 'none'
     }
-    phoneFiel.required = !isPhoneRequired
+    phoneField.required = !isPhoneRequired
     isPhoneRequired = !isPhoneRequired
   })
 
-documen.querySelector('button[type="submit"]')
+document.querySelector('button[type="submit"]')
   .addEventListener('click', function(event) {
     event.preventDefault()
     const firstNameField = document.getElementById('firstName')
