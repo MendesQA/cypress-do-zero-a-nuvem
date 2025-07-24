@@ -8,6 +8,7 @@ describe('Central de Atendimento ao Cliente TAT', () => {
   })
  
   it('preenche os campos obrigatórios e envia o formulário', () => {
+    cy.clock()
      const longText = Cypress._.repeat('asdfghjkkllkjhgffdsss', 10)
 
     cy.get('#firstName').type('Gabriel Mendes')
@@ -15,15 +16,29 @@ describe('Central de Atendimento ao Cliente TAT', () => {
     cy.get('#email').type('mendesmendes@gmail.com')
     cy.get('#open-text-area').type(longText, {delay: 0})
     cy.contains('button', 'Enviar').click()
- })
- 
- it('exibe mensagen de erro ao submeter o formulário com um emaul com formatação inválida', () => {
-    cy.get('#firstName').type('Gabriel Mendes')
-    cy.get('#lastName').type('da Silva')
-    cy.get('#email').type('mendesmendes@gmail,com')
-    cy.get('#open-text-area').type('Text')
-    cy.contains('button', 'Enviar').click()
+
+    cy.get('.success').should('be.visible')
+
+    cy.tick(3000)
+
+    cy.get('.success').should('not.be.visible')
   })
+ 
+ it('exibe mensagen de erro ao submeter o formulário com um email com formatação inválida', () => {
+  cy.clock()
+  
+  cy.get('#firstName').type('Gabriel Mendes')
+  cy.get('#lastName').type('da Silva')
+  cy.get('#email').type('mendesmendes@gmail,com')
+  cy.get('#open-text-area').type('Text')
+  cy.contains('button', 'Enviar').click()
+
+  cy.get('.error').should('be.visible')
+
+  cy.tick(3000)
+
+  cy.get('.error').should('not.be.visible')
+ })
 
  it('exibe mensagem de erro quando o telefone se torna obrigatóriov mas não é preenchido antea so envio do formulátio', () => {
     cy.get('#phone')
@@ -32,14 +47,20 @@ describe('Central de Atendimento ao Cliente TAT', () => {
  })
 
  it('exibe mensagen de erro quando o telefone se torna obrigatório mas não é preenchido', () => {
-    cy.get('#firstName').type('Gabriel Mendes')
-    cy.get('#lastName').type('da Silva')
-    cy.get('#email').type('mendesmendes@gmail,com')
-    cy.get('#open-text-area').type('Text')
-    cy.get('#phone-checkbox').check()
-    cy.contains('button', 'Enviar').click()
+  cy.clock()
+  
+  cy.get('#firstName').type('Gabriel Mendes')
+  cy.get('#lastName').type('da Silva')
+  cy.get('#email').type('mendesmendes@gmail,com')
+  cy.get('#open-text-area').type('Text')
+  cy.get('#phone-checkbox').check()
+  cy.contains('button', 'Enviar').click()
 
-    cy.get('.error').should('be.visible')
+  cy.get('.error').should('be.visible')
+
+  cy.tick(3000)
+
+  cy.get('.error').should('not.be.visible')
  })
 
  it('preenche e limpa os campos nome, sobrenome, email e telefone', () => {
@@ -66,12 +87,20 @@ describe('Central de Atendimento ao Cliente TAT', () => {
        
   })
   it('clicar no botão de envar sem preencher os campos obrigatórios', () => {
+    cy.clock()
+
     cy.contains('button', 'Enviar').click()
 
     cy.get('.error').should('be.visible')
+
+    cy.tick(3000)
+
+    cy.get('.error').should('not.be.visible')
   })
 
   it('envia o formulário com sucesso usando um comando customizado', () => {
+    cy.clock()
+    
     const data = {
       firstName: 'Gabriel',
       lastName: 'MEndes',
@@ -82,6 +111,10 @@ describe('Central de Atendimento ao Cliente TAT', () => {
     cy.fillMandatoryFieldsAndSubmit(data)
 
     cy.get('.success').should('be.visible')
+
+    cy.tick(3000)
+
+    cy.get('.success').should('not.be.visible')
   })
 
   it('seleciona um produto (YouTube) por seu texto', () => {
@@ -163,5 +196,28 @@ describe('Central de Atendimento ao Cliente TAT', () => {
     .click()
 
     cy.contains('h1', 'CAC TAT - Política de Privacidade').should('be.visible')
+ })
+
+ it('exibe e oculta as mensagens de sucesso e erro usando .invoke()', () => {
+  cy.get('.success')
+    .should('not.be.visible')
+    .invoke('show')
+    .should('be.visible')
+    .and('contain', 'Mensagem enviada com sucesso.')
+    .invoke('hide')
+    .should('not.be.visible')
+  cy.get('.error')
+    .should('not.be.visible')
+    .invoke('show')
+    .should('be.visible')
+    .and('contain', 'Valide os campos obrigatórios!')
+    .invoke('hide')
+    .should('not.be.visible')
+ })
+
+ it.only('preenche o campo da área de texto usando o comando invoke', () => {
+    cy.get('#open-text-area')
+    .invoke('val', 'Um texto qualquer')
+    .should('have.value', 'Um texto qualquer')
  })
 })

@@ -15,3 +15,9 @@
 
 // Import commands.js using ES2015 syntax:
 import './commands'
+
+// Handler para exceções não capturadas
+Cypress.on('uncaught:exception', (err, runnable) => {
+  // permite que o teste continue mesmo com o erro 401
+  return false
+})
