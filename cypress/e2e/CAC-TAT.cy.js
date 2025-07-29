@@ -216,8 +216,32 @@ describe('Central de Atendimento ao Cliente TAT', () => {
  })
 
  it('preenche o campo da área de texto usando o comando invoke', () => {
-    cy.get('#open-text-area')
+  cy.get('#open-text-area')
     .invoke('val', 'Um texto qualquer')
     .should('have.value', 'Um texto qualquer')
  })
+
+ it('faz uma requisição HTTP', () => {
+   cy.request('https://cac-tat-v3.s3.eu-central-1.amazonaws.com/index.html')
+     .as('getRequest')
+     .its('status')
+     .should('be.equal', 200)
+   cy.get('@getRequest')
+     .its('statusText')
+     .should('be.equal', 'OK')
+   cy.get('@getRequest')
+     .its('body')
+     .should('include', 'CAC TAT')
+ })
+
+ it('encontra o gato escondido', () => {
+  cy.get('#cat')
+    .invoke('show')
+    .should('be.visible')
+  cy.get('#title')
+    .invoke('text', 'CAT TAT')
+  cy.get('#subtitle')
+    .invoke('text', 'Eu <3 gatos!')
+ })
+ 
 })
